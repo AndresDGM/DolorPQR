@@ -5,6 +5,7 @@ import { ConsultaPqrComponent } from './presentation/pages/consulta-pqr';
 import { DetallePqrComponent } from './presentation/pages/detalle-pqr';
 import { HomeComponent } from './presentation/pages/home';
 import { LoginComponent } from './presentation/pages/login';
+import { NotFoundComponent } from './presentation/pages/not-found';
 import { RegistroPqrComponent } from './presentation/pages/registro-pqr';
 import { RegistroSolicitanteComponent } from './presentation/pages/registro-solicitante';
 
@@ -37,4 +38,7 @@ export const routes: Routes = [
     title: 'Detalle de Solicitud — MiPQR',
     canActivate: [authGuard(['Analista SIAU', 'Responsable', 'Directivo'])],
   },
+
+  // Ruta 404
+  { path: '**', component: NotFoundComponent, title: 'Página No Encontrada — MiPQR' },
 ];
