@@ -4,6 +4,8 @@
 export const environment = {
   production: false,
   baseUrlNode: 'http://localhost:3000',
+  // Clave DES compartida con el backend (exactamente 8 caracteres)
+  desKey: 'claveDES',
   // Origen de datos por módulo: 'node' consume el backend, 'local' usa la simulación en memoria
   adapter: {
     auth: 'node' as const,
