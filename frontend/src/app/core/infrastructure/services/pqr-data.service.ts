@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { fakerES as faker } from '@faker-js/faker';
 import { delay, Observable, of, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { Category } from '../../domain/models/category.model';
 import { PqrHistory } from '../../domain/models/pqr-history.model';
 import { PqrResponse } from '../../domain/models/pqr-response.model';
@@ -8,17 +10,26 @@ import { CreatePqrPayload, Pqr, PqrStatusName, PqrType } from '../../domain/mode
 import { User, UserRoleName } from '../../domain/models/user.model';
 
 /**
- * Servicio de infraestructura que simula el backend con Faker.
+ * Servicio centralizado de Infraestructura para el acceso a datos.
  *
  * @description
- * Genera datos realistas en memoria para el contexto de salud de la Clínica Dolormed,
- * simulando latencia de red mediante `delay()` de RxJS para representar
- * con fidelidad el comportamiento de un backend real.
+ * Administra las comunicaciones HTTP hacia el backend NodeJS
+ * así como la generación y persistencia en memoria de datos simulados mediante Faker.
+ *
+ * @architecture Clean Architecture
+ * @layer Infrastructure
  */
 @Injectable({
   providedIn: 'root',
 })
 export class PqrDataService {
+  private httpClient = inject(HttpClient);
+
+  private readonly nodeUrl = environment.baseUrlNode;
+
+  // ==========================================
+  // DATOS SIMULADOS EN MEMORIA (FAKER)
+  // ==========================================
   private categories: Category[] = [
     { idCategoria: 1, nombre: 'Consulta Externa', descripcion: 'Atención médica general y con especialistas.', activa: true },
     { idCategoria: 2, nombre: 'Urgencias', descripcion: 'Atención de emergencias y triage médico.', activa: true },
@@ -83,9 +94,6 @@ export class PqrDataService {
     this.seedInitialData();
   }
 
-  /**
-   * Genera el conjunto de datos inicial con Faker.
-   */
   private seedInitialData(): void {
     const tipos: PqrType[] = ['Peticion', 'Queja', 'Reclamo', 'Sugerencia'];
     const estados: PqrStatusName[] = ['Recibida', 'En revision', 'Asignada', 'En gestion', 'Respondida', 'Cerrada'];
@@ -141,14 +149,13 @@ export class PqrDataService {
         nombreResponsable: estado !== 'Recibida' && estado !== 'En revision' ? 'Dr. Fernando Salazar' : undefined,
         tipoPqr: tipo,
         asunto: asunto,
-        descripcion: `${asunto}. Solicitado por ${solicitanteNombre}. Se requiere pronta gestión para solucionar la necesidad descrita.`,
+        descripcion: `${asunto}. Solicitado por ${solicitanteNombre}. Se requiere atención oportuna.`,
         fechaRegistro: fechaRegistro,
         fechaCierre: estado === 'Cerrada' ? new Date().toISOString() : undefined,
       };
 
       this.pqrs.push(pqr);
 
-      // Evento de radicación
       this.history.push({
         idHistorial: this.history.length + 1,
         idPqr: i,
@@ -181,14 +188,16 @@ export class PqrDataService {
           idPqr: i,
           idUsuario: 3,
           nombreUsuario: 'Dr. Fernando Salazar',
-          contenido: `Estimado(a) ${solicitanteNombre}: Dando alcance a su solicitud, le informamos que el caso fue evaluado por el comité médico y se adoptaron las medidas correspondientes.`,
+          contenido: `Estimado(a) ${solicitanteNombre}: Dando respuesta a su solicitud, le informamos que las acciones correctivas fueron implementadas.`,
           fechaRespuesta: new Date().toISOString(),
         });
       }
     }
   }
 
-  // ==================== MÉTODOS PQR ====================
+  // ==========================================
+  // 1. IMPLEMENTACIÓN LOCAL (FAKER)
+  // ==========================================
 
   getAllPqrsLocal(limit?: number): Observable<Pqr[]> {
     const result = limit ? this.pqrs.slice(0, limit) : [...this.pqrs];
@@ -330,8 +339,6 @@ export class PqrDataService {
     return of(response).pipe(delay(350));
   }
 
-  // ==================== MÉTODOS USUARIOS Y CATEGORÍAS ====================
-
   getAllUsersLocal(count?: number): Observable<User[]> {
     const list = count ? this.users.slice(0, count) : [...this.users];
     return of(list).pipe(delay(200));
@@ -361,5 +368,69 @@ export class PqrDataService {
     }
     return of({ ...item }).pipe(delay(150));
   }
-}
 
+  // ==========================================
+  // 2. IMPLEMENTACIÓN NODE.JS BACKEND
+  // ==========================================
+
+  getAllPqrsNode(limit?: number): Observable<Pqr[]> {
+    const url = limit ? `${this.nodeUrl}/api/pqrs?limit=${limit}` : `${this.nodeUrl}/api/pqrs`;
+    return this.httpClient.get<Pqr[]>(url);
+  }
+
+  getPqrByIdNode(idPqr: number): Observable<Pqr> {
+    return this.httpClient.get<Pqr>(`${this.nodeUrl}/api/pqrs/${idPqr}`);
+  }
+
+  getPqrByCodigoNode(codigo: string): Observable<Pqr> {
+    return this.httpClient.get<Pqr>(`${this.nodeUrl}/api/pqrs/codigo/${codigo}`);
+  }
+
+  createPqrNode(payload: CreatePqrPayload): Observable<Pqr> {
+    return this.httpClient.post<Pqr>(`${this.nodeUrl}/api/pqrs`, payload);
+  }
+
+  updateEstadoNode(idPqr: number, nuevoEstado: PqrStatusName, observacion?: string): Observable<Pqr> {
+    return this.httpClient.patch<Pqr>(`${this.nodeUrl}/api/pqrs/${idPqr}/estado`, {
+      estado: nuevoEstado,
+      observacion,
+    });
+  }
+
+  assignResponsableNode(idPqr: number, idResponsable: number): Observable<Pqr> {
+    return this.httpClient.patch<Pqr>(`${this.nodeUrl}/api/pqrs/${idPqr}/responsable`, {
+      idResponsable,
+    });
+  }
+
+  getHistorialNode(idPqr: number): Observable<PqrHistory[]> {
+    return this.httpClient.get<PqrHistory[]>(`${this.nodeUrl}/api/pqrs/${idPqr}/historial`);
+  }
+
+  responderNode(idPqr: number, contenido: string): Observable<PqrResponse> {
+    return this.httpClient.post<PqrResponse>(`${this.nodeUrl}/api/pqrs/${idPqr}/respuestas`, {
+      contenido,
+    });
+  }
+
+  getAllUsersNode(countUsers?: number): Observable<User[]> {
+    const url = countUsers ? `${this.nodeUrl}/api/users?count=${countUsers}` : `${this.nodeUrl}/api/users`;
+    return this.httpClient.get<User[]>(url);
+  }
+
+  getUserByIdNode(idUsuario: number): Observable<User> {
+    return this.httpClient.get<User>(`${this.nodeUrl}/api/users/${idUsuario}`);
+  }
+
+  getUsersByRolNode(rol: UserRoleName): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${this.nodeUrl}/api/users/rol/${rol}`);
+  }
+
+  getAllCategoriesNode(): Observable<Category[]> {
+    return this.httpClient.get<Category[]>(`${this.nodeUrl}/api/categories`);
+  }
+
+  getCategoryByIdNode(idCategoria: number): Observable<Category> {
+    return this.httpClient.get<Category>(`${this.nodeUrl}/api/categories/${idCategoria}`);
+  }
+}

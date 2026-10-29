@@ -248,8 +248,7 @@ MiPQR/
 │   │       │       ├── services/
 │   │       │       └── repositories/
 │   │       │           ├── local-implementation/
-│   │       │           ├── node-implementation/
-│   │       │           └── springboot-implementation/
+│   │       │           └── node-implementation/
 │   │       └── presentation/
 │   │           ├── components/
 │   │           ├── pages/

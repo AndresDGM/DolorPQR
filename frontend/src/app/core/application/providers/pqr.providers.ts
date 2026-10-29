@@ -5,6 +5,9 @@ import { UserRepository } from '../../domain/repositories/user.repository';
 import { CategoryLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/category-local.repository.impl';
 import { PqrLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/pqr-local.repository.impl';
 import { UserLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/user-local.repository.impl';
+import { CategoryNodeRepositoryImpl } from '../../infrastructure/repositories/node-implementation/category-node.repository.impl';
+import { PqrNodeRepositoryImpl } from '../../infrastructure/repositories/node-implementation/pqr-node.repository.impl';
+import { UserNodeRepositoryImpl } from '../../infrastructure/repositories/node-implementation/user-node.repository.impl';
 import { AssignPqrResponsableUseCase } from '../usecases/assign-pqr-responsable.usecase';
 import { CreatePqrUseCase } from '../usecases/create-pqr.usecase';
 import { GetAllPqrsUseCase } from '../usecases/get-all-pqrs.usecase';
@@ -29,11 +32,7 @@ export const PQR_USE_CASES: Provider[] = [
 ];
 
 /**
- * Proveedores locales para simulación con Faker.
- *
- * @remarks
- * Asocia los contratos de repositorio del dominio a sus implementaciones locales
- * simuladas con Faker en memoria.
+ * Proveedores locales para simulación en memoria con Faker.
  */
 export const PQR_LOCAL_PROVIDERS: Provider[] = [
   ...PQR_USE_CASES,
@@ -43,20 +42,25 @@ export const PQR_LOCAL_PROVIDERS: Provider[] = [
 ];
 
 /**
- * Función proveedora para registrar la implementación local de PQR en el arranque de la app.
- *
- * @example
- * ```ts
- * // En app.config.ts:
- * export const appConfig: ApplicationConfig = {
- *   providers: [
- *     provideRouter(routes),
- *     providePqrLocal(),
- *   ]
- * };
- * ```
+ * Proveedores conectados al Backend Node.js.
+ */
+export const PQR_NODE_PROVIDERS: Provider[] = [
+  ...PQR_USE_CASES,
+  { provide: PqrRepository, useClass: PqrNodeRepositoryImpl },
+  { provide: UserRepository, useClass: UserNodeRepositoryImpl },
+  { provide: CategoryRepository, useClass: CategoryNodeRepositoryImpl },
+];
+
+/**
+ * Función proveedora para usar la implementación local con Faker.
  */
 export function providePqrLocal(): EnvironmentProviders {
   return makeEnvironmentProviders(PQR_LOCAL_PROVIDERS);
 }
 
+/**
+ * Función proveedora para usar la API del backend Node.js.
+ */
+export function providePqrNode(): EnvironmentProviders {
+  return makeEnvironmentProviders(PQR_NODE_PROVIDERS);
+}

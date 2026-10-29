@@ -10,7 +10,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
 
-    // Proveedor local simulado con Faker para desarrollo frontend independiente
+    // Inversión de dependencias de Infraestructura:
+    // - providePqrLocal()  -> Simulación en memoria con Faker
+    // - providePqrNode()   -> Backend API NodeJS (Express)
     providePqrLocal(),
   ],
 };
