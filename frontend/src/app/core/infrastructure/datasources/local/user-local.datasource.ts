@@ -14,52 +14,14 @@ import { User, UserRoleName } from '../../../domain/models/user.model';
 })
 export class UserLocalDatasource {
   private users: User[] = [
-    {
-      idUsuario: 1,
-      idRol: 1,
-      rol: 'Solicitante',
-      nombre: 'Carlos Mario Restrepo',
-      correo: 'carlos.restrepo@gmail.com',
-      identificacion: '1116234901',
-      activo: true,
-    },
-    {
-      idUsuario: 2,
-      idRol: 2,
-      rol: 'Analista SIAU',
-      nombre: 'Carolina Gómez Soto',
-      correo: 'carolina.gomez@dolormed.com',
-      identificacion: '1116456789',
-      activo: true,
-    },
-    {
-      idUsuario: 3,
-      idRol: 3,
-      rol: 'Responsable',
-      nombre: 'Dr. Fernando Salazar (Urgencias)',
-      correo: 'fernando.salazar@dolormed.com',
-      identificacion: '94321678',
-      activo: true,
-    },
-    {
-      idUsuario: 4,
-      idRol: 3,
-      rol: 'Responsable',
-      nombre: 'Dra. Patricia Ortiz (Facturación)',
-      correo: 'patricia.ortiz@dolormed.com',
-      identificacion: '66987123',
-      activo: true,
-    },
-    {
-      idUsuario: 5,
-      idRol: 4,
-      rol: 'Directivo',
-      nombre: 'Dra. María Elena Valencia',
-      correo: 'maria.valencia@dolormed.com',
-      identificacion: '31456789',
-      activo: true,
-    },
+    { idUsuario: 1, idRol: 2, rol: 'Analista SIAU', nombre: 'Carolina Gomez', correo: 'carolina.gomez@dolormed.com', identificacion: '1010101001', activo: true },
+    { idUsuario: 2, idRol: 3, rol: 'Responsable', nombre: 'Fernando Salazar', correo: 'fernando.salazar@dolormed.com', identificacion: '1010101002', activo: true },
+    { idUsuario: 3, idRol: 3, rol: 'Responsable', nombre: 'Laura Ortiz', correo: 'laura.ortiz@dolormed.com', identificacion: '1010101003', activo: true },
+    { idUsuario: 4, idRol: 4, rol: 'Directivo', nombre: 'Maria Valencia', correo: 'maria.valencia@dolormed.com', identificacion: '1010101004', activo: true },
+    { idUsuario: 5, idRol: 1, rol: 'Solicitante', nombre: 'Carlos Restrepo', correo: 'carlos.restrepo@gmail.com', identificacion: '1010101005', activo: true },
+    { idUsuario: 6, idRol: 1, rol: 'Solicitante', nombre: 'Ana Torres', correo: 'ana.torres@gmail.com', identificacion: '1010101006', activo: false },
   ];
+
 
   getAll(count?: number): Observable<User[]> {
     const list = count ? this.users.slice(0, count) : [...this.users];

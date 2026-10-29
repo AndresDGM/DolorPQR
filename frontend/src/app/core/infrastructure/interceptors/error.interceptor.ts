@@ -1,5 +1,8 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { AuthService } from '../../application/auth/auth.service';
 
 /**
  * Interceptor HTTP para captura y normalización de errores globales en respuestas HTTP.
@@ -8,12 +11,23 @@ import { catchError, throwError } from 'rxjs';
  * Procesa respuestas de error comunes (400, 401, 403, 404, 500)
  * registrándolas o preparando la trazabilidad adecuada.
  *
+ * Ante un 401 de cualquier petición distinta del login, cierra la sesión y envía al usuario a /login.
+ *
  * @architecture Clean Architecture
  * @layer Infrastructure
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Token ausente, invalido o expirado: la sesion ya no es valida
+      if (error.status === 401 && !req.url.includes('/auth/login')) {
+        authService.logout();
+        router.navigateByUrl('/login');
+      }
+
       let errorMessage = 'Ocurrió un error inesperado en la comunicación con el servidor.';
 
       if (error.error instanceof ErrorEvent) {

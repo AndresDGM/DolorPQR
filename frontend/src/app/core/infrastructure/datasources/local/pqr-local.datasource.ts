@@ -81,8 +81,8 @@ export class PqrLocalDatasource {
         categoria: categoria.nombre,
         idEstado: estados.indexOf(estado) + 1,
         estado: estado,
-        idResponsable: estado !== 'Recibida' && estado !== 'En revision' ? 3 : undefined,
-        nombreResponsable: estado !== 'Recibida' && estado !== 'En revision' ? 'Dr. Fernando Salazar' : undefined,
+        idResponsable: estado !== 'Recibida' && estado !== 'En revision' ? 2 : undefined,
+        nombreResponsable: estado !== 'Recibida' && estado !== 'En revision' ? 'Fernando Salazar' : undefined,
         tipoPqr: tipo,
         asunto: asunto,
         descripcion: `${asunto}. Solicitado por ${solicitanteNombre}. Se requiere atención oportuna.`,
@@ -123,7 +123,7 @@ export class PqrLocalDatasource {
           idRespuesta: this.responses.length + 1,
           idPqr: i,
           idUsuario: 3,
-          nombreUsuario: 'Dr. Fernando Salazar',
+          nombreUsuario: 'Fernando Salazar',
           contenido: `Estimado(a) ${solicitanteNombre}: Dando respuesta a su solicitud, le informamos que las acciones correctivas fueron implementadas.`,
           fechaRespuesta: new Date().toISOString(),
         });
@@ -263,7 +263,7 @@ export class PqrLocalDatasource {
       idRespuesta: this.responses.length + 1,
       idPqr,
       idUsuario: 3,
-      nombreUsuario: 'Dr. Fernando Salazar',
+      nombreUsuario: 'Fernando Salazar',
       contenido,
       fechaRespuesta: new Date().toISOString(),
     };

@@ -1,20 +1,30 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import { appMiddlewares, authController, rolesController, usuariosController } from './config/dependencies.js';
+import { envs } from './config/envs.js';
+import { initDatabase } from './infrastructure/database/postgres.js';
+import { AppRoutes } from './presentation/routes/index.js';
+import { Server } from './presentation/server.js';
 
-dotenv.config();
+async function main(): Promise<void> {
+  await initDatabase();
 
-const app = express();
-const port = process.env.PORT || 3000;
+  const routes = AppRoutes.routes(
+    {
+      authController,
+      rolesController,
+      usuariosController,
+    },
+    appMiddlewares
+  );
 
-app.use(cors());
-app.use(express.json());
+  const server = new Server({
+    port: envs.PORT,
+    routes,
+  });
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Servidor iniciado correctamente' });
+  server.start();
+}
+
+main().catch((error) => {
+  console.error('No se pudo iniciar el servidor:', error);
+  process.exit(1);
 });
-
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-});
-
