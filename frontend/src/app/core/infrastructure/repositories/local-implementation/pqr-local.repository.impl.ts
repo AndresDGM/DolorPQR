@@ -1,11 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Category } from '../../../domain/models/category.model';
 import { PqrHistory } from '../../../domain/models/pqr-history.model';
 import { PqrResponse } from '../../../domain/models/pqr-response.model';
 import { CreatePqrPayload, Pqr, PqrStatusName } from '../../../domain/models/pqr.model';
 import { PqrRepository } from '../../../domain/repositories/pqr.repository';
-import { PqrDataService } from '../../services/pqr-data.service';
+import { PqrLocalDatasource } from '../../datasources/local/pqr-local.datasource';
 
 /**
  * Implementación local del repositorio de PQRs.
@@ -13,48 +12,47 @@ import { PqrDataService } from '../../services/pqr-data.service';
  * @remarks
  * Pertenece a la **capa de Infraestructura** y actúa como un **Adapter**
  * entre el contrato del dominio {@link PqrRepository} y el datasource local simulado
- * con Faker {@link PqrDataService}.
+ * con Faker {@link PqrLocalDatasource}.
  *
  * @architecture Clean Architecture
  * @layer Infrastructure
  *
  * @see {@link PqrRepository}
- * @see {@link PqrDataService}
+ * @see {@link PqrLocalDatasource}
  */
 @Injectable()
 export class PqrLocalRepositoryImpl extends PqrRepository {
-  private dataService = inject(PqrDataService);
+  private dataSource = inject(PqrLocalDatasource);
 
   getAll(limit?: number): Observable<Pqr[]> {
-    return this.dataService.getAllPqrsLocal(limit);
+    return this.dataSource.getAll(limit);
   }
 
   getById(idPqr: number): Observable<Pqr> {
-    return this.dataService.getPqrByIdLocal(idPqr);
+    return this.dataSource.getById(idPqr);
   }
 
   getByCodigoSeguimiento(codigoSeguimiento: string): Observable<Pqr> {
-    return this.dataService.getPqrByCodigoLocal(codigoSeguimiento);
+    return this.dataSource.getByCodigo(codigoSeguimiento);
   }
 
   create(payload: CreatePqrPayload): Observable<Pqr> {
-    return this.dataService.createPqrLocal(payload);
+    return this.dataSource.create(payload);
   }
 
   updateEstado(idPqr: number, nuevoEstado: PqrStatusName, observacion?: string): Observable<Pqr> {
-    return this.dataService.updateEstadoLocal(idPqr, nuevoEstado, observacion);
+    return this.dataSource.updateEstado(idPqr, nuevoEstado, observacion);
   }
 
   assignResponsable(idPqr: number, idResponsable: number): Observable<Pqr> {
-    return this.dataService.assignResponsableLocal(idPqr, idResponsable);
+    return this.dataSource.assignResponsable(idPqr, idResponsable);
   }
 
   getHistorial(idPqr: number): Observable<PqrHistory[]> {
-    return this.dataService.getHistorialLocal(idPqr);
+    return this.dataSource.getHistorial(idPqr);
   }
 
   responder(idPqr: number, contenido: string): Observable<PqrResponse> {
-    return this.dataService.responderLocal(idPqr, contenido);
+    return this.dataSource.responder(idPqr, contenido);
   }
 }
-

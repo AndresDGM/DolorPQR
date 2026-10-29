@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category } from '../../../domain/models/category.model';
 import { CategoryRepository } from '../../../domain/repositories/category.repository';
-import { PqrDataService } from '../../services/pqr-data.service';
+import { CategoryLocalDatasource } from '../../datasources/local/category-local.datasource';
 
 /**
  * Implementación local del repositorio de categorías.
@@ -12,14 +12,13 @@ import { PqrDataService } from '../../services/pqr-data.service';
  */
 @Injectable()
 export class CategoryLocalRepositoryImpl extends CategoryRepository {
-  private dataService = inject(PqrDataService);
+  private dataSource = inject(CategoryLocalDatasource);
 
   getAll(): Observable<Category[]> {
-    return this.dataService.getAllCategoriesLocal();
+    return this.dataSource.getAll();
   }
 
   getById(idCategoria: number): Observable<Category> {
-    return this.dataService.getCategoryByIdLocal(idCategoria);
+    return this.dataSource.getById(idCategoria);
   }
 }
-

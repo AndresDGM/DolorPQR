@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User, UserRoleName } from '../../../domain/models/user.model';
 import { UserRepository } from '../../../domain/repositories/user.repository';
-import { PqrDataService } from '../../services/pqr-data.service';
+import { UserRemoteDatasource } from '../../datasources/remote/user-remote.datasource';
 
 /**
  * Implementación del repositorio de usuarios para backend Node.js.
@@ -12,18 +12,17 @@ import { PqrDataService } from '../../services/pqr-data.service';
  */
 @Injectable()
 export class UserNodeRepositoryImpl extends UserRepository {
-  private dataService = inject(PqrDataService);
+  private dataSource = inject(UserRemoteDatasource);
 
   getAll(countUsers?: number): Observable<User[]> {
-    return this.dataService.getAllUsersNode(countUsers);
+    return this.dataSource.getAll(countUsers);
   }
 
   getById(idUsuario: number): Observable<User> {
-    return this.dataService.getUserByIdNode(idUsuario);
+    return this.dataSource.getById(idUsuario);
   }
 
   getByRol(rol: UserRoleName): Observable<User[]> {
-    return this.dataService.getUsersByRolNode(rol);
+    return this.dataSource.getByRol(rol);
   }
 }
-

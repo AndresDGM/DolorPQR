@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category } from '../../../domain/models/category.model';
 import { CategoryRepository } from '../../../domain/repositories/category.repository';
-import { PqrDataService } from '../../services/pqr-data.service';
+import { CategoryRemoteDatasource } from '../../datasources/remote/category-remote.datasource';
 
 /**
  * Implementación del repositorio de categorías para backend Node.js.
@@ -12,14 +12,13 @@ import { PqrDataService } from '../../services/pqr-data.service';
  */
 @Injectable()
 export class CategoryNodeRepositoryImpl extends CategoryRepository {
-  private dataService = inject(PqrDataService);
+  private dataSource = inject(CategoryRemoteDatasource);
 
   getAll(): Observable<Category[]> {
-    return this.dataService.getAllCategoriesNode();
+    return this.dataSource.getAll();
   }
 
   getById(idCategoria: number): Observable<Category> {
-    return this.dataService.getCategoryByIdNode(idCategoria);
+    return this.dataSource.getById(idCategoria);
   }
 }
-
