@@ -13,6 +13,12 @@ export function errorHandler(
     return;
   }
 
+  // Errores de parseo de express.json() (cuerpo con JSON mal formado)
+  if (err instanceof SyntaxError && 'body' in err) {
+    res.status(400).json({ error: 'El cuerpo de la solicitud no es un JSON valido' });
+    return;
+  }
+
   console.error('Unhandled server error:', err);
   res.status(500).json({ error: 'Error interno del servidor' });
 }
