@@ -8,6 +8,11 @@ import { PqrHistory } from '../../domain/models/pqr-history.model';
 import { PqrResponse } from '../../domain/models/pqr-response.model';
 import { CreatePqrPayload, Pqr, PqrStatusName, PqrType } from '../../domain/models/pqr.model';
 import { User, UserRoleName } from '../../domain/models/user.model';
+import {
+  CategoryNotFoundError,
+  PqrNotFoundError,
+  UserNotFoundError,
+} from '../../domain/errors';
 
 /**
  * Servicio centralizado de Infraestructura para el acceso a datos.
@@ -207,7 +212,7 @@ export class PqrDataService {
   getPqrByIdLocal(idPqr: number): Observable<Pqr> {
     const item = this.pqrs.find((p) => p.idPqr === idPqr);
     if (!item) {
-      return throwError(() => new Error(`No se encontró la PQR con ID ${idPqr}`));
+      return throwError(() => new PqrNotFoundError(idPqr));
     }
     return of({ ...item }).pipe(delay(250));
   }
@@ -216,7 +221,7 @@ export class PqrDataService {
     const clean = codigo.trim().toUpperCase();
     const item = this.pqrs.find((p) => p.codigoSeguimiento.toUpperCase() === clean);
     if (!item) {
-      return throwError(() => new Error(`No se encontró ninguna PQR con el código "${codigo}"`));
+      return throwError(() => new PqrNotFoundError(codigo));
     }
     return of({ ...item }).pipe(delay(300));
   }
@@ -263,7 +268,7 @@ export class PqrDataService {
   updateEstadoLocal(idPqr: number, nuevoEstado: PqrStatusName, observacion?: string): Observable<Pqr> {
     const index = this.pqrs.findIndex((p) => p.idPqr === idPqr);
     if (index === -1) {
-      return throwError(() => new Error(`PQR no encontrada`));
+      return throwError(() => new PqrNotFoundError(idPqr));
     }
 
     const current = this.pqrs[index]!;
@@ -292,7 +297,7 @@ export class PqrDataService {
   assignResponsableLocal(idPqr: number, idResponsable: number): Observable<Pqr> {
     const index = this.pqrs.findIndex((p) => p.idPqr === idPqr);
     if (index === -1) {
-      return throwError(() => new Error(`PQR no encontrada`));
+      return throwError(() => new PqrNotFoundError(idPqr));
     }
 
     const responsable = this.users.find((u) => u.idUsuario === idResponsable);
@@ -347,7 +352,7 @@ export class PqrDataService {
   getUserByIdLocal(idUsuario: number): Observable<User> {
     const item = this.users.find((u) => u.idUsuario === idUsuario);
     if (!item) {
-      return throwError(() => new Error(`Usuario no encontrado`));
+      return throwError(() => new UserNotFoundError(idUsuario));
     }
     return of({ ...item }).pipe(delay(200));
   }
@@ -364,7 +369,7 @@ export class PqrDataService {
   getCategoryByIdLocal(idCategoria: number): Observable<Category> {
     const item = this.categories.find((c) => c.idCategoria === idCategoria);
     if (!item) {
-      return throwError(() => new Error(`Categoría no encontrada`));
+      return throwError(() => new CategoryNotFoundError(idCategoria));
     }
     return of({ ...item }).pipe(delay(150));
   }
