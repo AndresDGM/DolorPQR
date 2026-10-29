@@ -1,5 +1,5 @@
 import { CipherService } from '../../domain/services/cipher.service.js';
-import { fromBase64, toBase64 } from './des/base64.js';
+import { fromBase64, toBase64 } from './encoding/base64.js';
 import { BLOCK_SIZE, DesAlgorithm } from './des/des.algorithm.js';
 
 /**
