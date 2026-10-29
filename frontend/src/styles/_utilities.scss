@@ -12,10 +12,11 @@
 
 .card {
   background-color: $color-white;
-  border-radius: $border-radius-md;
-  box-shadow: none;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
   padding: 1.5rem;
-  border: 1px solid #e3e6eb;
+  border: 1px solid #e6e8ee;
+  transition: $transition-base;
 }
 
 .btn {
@@ -24,7 +25,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 4px;
+  border-radius: $border-radius-md;
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: 0.01em;
@@ -33,6 +34,19 @@
   transition: $transition-base;
   text-decoration: none;
 
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($color-accent, 0.35);
+    outline-offset: 2px;
+  }
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -40,24 +54,26 @@
 }
 
 .btn-primary {
-  background-color: $color-primary;
+  background-image: $gradient-primary;
   color: $color-white;
   border-color: $color-primary;
+  box-shadow: 0 2px 6px rgba($color-primary, 0.3);
 
   &:hover:not(:disabled) {
-    background-color: color.adjust($color-primary, $lightness: -7%);
-    border-color: color.adjust($color-primary, $lightness: -7%);
+    background-image: linear-gradient(135deg, color.adjust($color-primary, $lightness: -6%), $color-primary);
+    box-shadow: 0 8px 18px -4px rgba($color-primary, 0.45);
   }
 }
 
 .btn-accent {
-  background-color: $color-accent;
+  background-image: $gradient-accent;
   color: $color-white;
   border-color: $color-accent;
+  box-shadow: 0 2px 6px rgba($color-accent, 0.3);
 
   &:hover:not(:disabled) {
-    background-color: color.adjust($color-accent, $lightness: -7%);
-    border-color: color.adjust($color-accent, $lightness: -7%);
+    background-image: linear-gradient(135deg, color.adjust($color-accent, $lightness: -6%), $color-accent);
+    box-shadow: 0 8px 18px -4px rgba($color-accent, 0.45);
   }
 }
 
@@ -69,6 +85,7 @@
   &:hover:not(:disabled) {
     background-color: $color-primary;
     color: $color-white;
+    box-shadow: 0 8px 18px -4px rgba($color-primary, 0.4);
   }
 }
 
@@ -80,6 +97,7 @@
   &:hover:not(:disabled) {
     background-color: $color-accent;
     color: $color-white;
+    box-shadow: 0 8px 18px -4px rgba($color-accent, 0.4);
   }
 }
 
@@ -102,16 +120,20 @@
 
   input, select, textarea {
     padding: 0.625rem 0.875rem;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
+    border: 1px solid #d5d9e0;
+    border-radius: $border-radius-md;
     background-color: $color-white;
     color: $color-dark;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+
+    &:hover:not(:focus) {
+      border-color: rgba($color-primary, 0.45);
+    }
 
     &:focus {
       border-color: $color-accent;
-      box-shadow: 0 0 0 3px rgba(39, 155, 175, 0.15);
+      box-shadow: 0 0 0 4px rgba(39, 155, 175, 0.16);
     }
 
     &.is-invalid {

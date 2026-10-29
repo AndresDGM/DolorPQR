@@ -12,6 +12,7 @@
   transition: $transition-base;
 
   &:hover {
+    transform: translateY(-3px);
     box-shadow: $shadow-md;
     border-color: rgba($color-accent, 0.3);
   }

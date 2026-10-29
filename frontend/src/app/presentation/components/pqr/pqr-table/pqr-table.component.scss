@@ -5,7 +5,7 @@
   overflow-x: auto;
   background-color: $color-white;
   border-radius: $border-radius-md;
-  box-shadow: $shadow-sm;
+  box-shadow: $shadow-md;
   border: 1px solid rgba($color-dark, 0.08);
 }
 
@@ -16,13 +16,13 @@
   font-size: 0.875rem;
 
   thead {
-    background-color: $color-surface;
-    border-bottom: 2px solid rgba($color-dark, 0.08);
+    background-color: rgba($color-primary, 0.05);
+    border-bottom: 2px solid $color-primary;
 
     th {
       padding: 0.875rem 1rem;
       font-weight: 700;
-      color: $color-dark;
+      color: $color-primary;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -36,7 +36,8 @@
       transition: background-color 0.15s;
 
       &:hover {
-        background-color: rgba($color-primary, 0.02);
+        background-color: rgba($color-accent, 0.08);
+        box-shadow: inset 3px 0 0 $color-accent;
       }
 
       &:last-child {

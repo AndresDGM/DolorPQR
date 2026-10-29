@@ -3,7 +3,8 @@
 .navbar {
   background-color: $color-white;
   border-bottom: 1px solid rgba($color-dark, 0.1);
-  box-shadow: $shadow-sm;
+  box-shadow: 0 2px 12px rgba($color-primary, 0.08);
+  border-top: 3px solid $color-primary;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -25,12 +26,18 @@
     gap: 0.75rem;
     text-decoration: none;
     color: inherit;
+
+    &:hover .navbar__logo-icon {
+      transform: rotate(-4deg) scale(1.06);
+    }
   }
 
   &__logo-icon {
     width: 38px;
     height: 38px;
-    background: linear-gradient(135deg, $color-primary, $color-accent);
+    background: $gradient-brand;
+    box-shadow: 0 4px 10px rgba($color-primary, 0.3);
+    transition: $transition-base;
     color: $color-white;
     font-weight: 700;
     font-size: 0.875rem;
@@ -67,14 +74,15 @@
 
   &__link {
     padding: 0.5rem 0.875rem;
-    border-radius: 6px;
+    border-radius: $border-radius-md;
     font-size: 0.875rem;
     font-weight: 500;
     color: $color-dark;
+    position: relative;
     transition: $transition-base;
 
     &:hover {
-      background-color: $color-surface;
+      background-color: rgba($color-primary, 0.06);
       color: $color-primary;
     }
 

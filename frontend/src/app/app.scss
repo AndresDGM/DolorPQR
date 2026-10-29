@@ -11,9 +11,10 @@
 }
 
 .app-footer {
-  background-color: $color-dark;
+  background: linear-gradient(135deg, $color-dark 0%, color-mix(in srgb, $color-primary 55%, $color-dark) 100%);
+  border-top: 3px solid $color-accent;
   color: $color-white;
-  padding: 1.5rem 1rem;
+  padding: 1.75rem 1rem;
   border-top: 1px solid rgba($color-white, 0.1);
   margin-top: auto;
 }

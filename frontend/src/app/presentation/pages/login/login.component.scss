@@ -11,8 +11,9 @@
 .login-card {
   width: 100%;
   max-width: 460px;
-  box-shadow: $shadow-md;
+  box-shadow: $shadow-lg;
   border-radius: $border-radius-lg;
+  border-top: 4px solid $color-primary;
 
   &__header {
     text-align: center;
