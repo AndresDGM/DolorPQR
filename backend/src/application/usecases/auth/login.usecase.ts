@@ -2,12 +2,15 @@ import { LoginDto } from '../../../domain/dtos/login.dto.js';
 import { CustomError } from '../../../domain/errors/custom.error.js';
 import { RolRepository } from '../../../domain/repositories/rol.repository.js';
 import { UsuarioRepository } from '../../../domain/repositories/usuario.repository.js';
-import { toUsuarioPublico, UsuarioPublico } from '../../types/usuario-publico.type.js';
+import { TokenService } from '../../../domain/services/token.service.js';
+import { AuthSession } from '../../types/auth-session.js';
+import { toUsuarioPublico } from '../../types/usuario-publico.type.js';
 
 export class LoginUseCase {
   constructor(
     private readonly usuarioRepository: UsuarioRepository,
-    private readonly rolRepository: RolRepository
+    private readonly rolRepository: RolRepository,
+    private readonly tokenService: TokenService
   ) {}
 
   private verifyPassword(plainPassword: string, storedPassword: string): boolean {
@@ -15,7 +18,7 @@ export class LoginUseCase {
     return plainPassword === storedPassword;
   }
 
-  async execute(dto: LoginDto): Promise<UsuarioPublico> {
+  async execute(dto: LoginDto): Promise<AuthSession> {
     const usuario = await this.usuarioRepository.getByCorreo(dto.correo);
     if (!usuario || !this.verifyPassword(dto.password, usuario.password)) {
       throw CustomError.unauthorized('Credenciales invalidas');
@@ -30,6 +33,12 @@ export class LoginUseCase {
       throw CustomError.notFound('Rol del usuario no encontrado');
     }
 
-    return toUsuarioPublico(usuario, rol.nombre);
+    const token = this.tokenService.sign({
+      sub: String(usuario.idUsuario),
+      idRol: usuario.idRol,
+      rol: rol.nombre,
+    });
+
+    return { token, usuario: toUsuarioPublico(usuario, rol.nombre) };
   }
 }

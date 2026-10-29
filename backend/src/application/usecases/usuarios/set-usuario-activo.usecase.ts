@@ -2,6 +2,7 @@ import { SetActivoDto } from '../../../domain/dtos/set-activo.dto.js';
 import { CustomError } from '../../../domain/errors/custom.error.js';
 import { RolRepository } from '../../../domain/repositories/rol.repository.js';
 import { UsuarioRepository } from '../../../domain/repositories/usuario.repository.js';
+import { Actor } from '../../types/actor.type.js';
 import { toUsuarioPublico, UsuarioPublico } from '../../types/usuario-publico.type.js';
 
 export class SetUsuarioActivoUseCase {
@@ -10,7 +11,11 @@ export class SetUsuarioActivoUseCase {
     private readonly rolRepository: RolRepository
   ) {}
 
-  async execute(idUsuario: number, dto: SetActivoDto): Promise<UsuarioPublico> {
+  async execute(idUsuario: number, dto: SetActivoDto, actor: Actor): Promise<UsuarioPublico> {
+    if (actor.idUsuario === idUsuario && !dto.activo) {
+      throw CustomError.badRequest('No puede desactivar su propia cuenta');
+    }
+
     const updatedUsuario = await this.usuarioRepository.setActivo(idUsuario, dto.activo);
     if (!updatedUsuario) {
       throw CustomError.notFound('Usuario no encontrado');

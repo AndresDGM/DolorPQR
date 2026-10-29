@@ -2,6 +2,7 @@ import { UpdateUsuarioDto } from '../../../domain/dtos/update-usuario.dto.js';
 import { CustomError } from '../../../domain/errors/custom.error.js';
 import { RolRepository } from '../../../domain/repositories/rol.repository.js';
 import { UsuarioRepository } from '../../../domain/repositories/usuario.repository.js';
+import { Actor } from '../../types/actor.type.js';
 import { toUsuarioPublico, UsuarioPublico } from '../../types/usuario-publico.type.js';
 
 export class UpdateUsuarioUseCase {
@@ -10,7 +11,17 @@ export class UpdateUsuarioUseCase {
     private readonly rolRepository: RolRepository
   ) {}
 
-  async execute(idUsuario: number, dto: UpdateUsuarioDto): Promise<UsuarioPublico> {
+  async execute(idUsuario: number, dto: UpdateUsuarioDto, actor: Actor): Promise<UsuarioPublico> {
+    // Solo el Directivo edita a otros usuarios; el resto unicamente se edita a si mismo
+    if (actor.rol !== 'Directivo') {
+      if (actor.idUsuario !== idUsuario) {
+        throw CustomError.forbidden('No tiene permisos para realizar esta accion');
+      }
+      if (dto.idRol !== undefined) {
+        throw CustomError.forbidden('No puede modificar su propio rol');
+      }
+    }
+
     const usuario = await this.usuarioRepository.getById(idUsuario);
     if (!usuario) {
       throw CustomError.notFound('Usuario no encontrado');
