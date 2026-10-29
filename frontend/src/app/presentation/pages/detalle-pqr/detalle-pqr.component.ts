@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/application/auth';
 import { AssignPqrResponsableUseCase } from '../../../core/application/usecases/assign-pqr-responsable.usecase';
 import { GetPqrByIdUseCase } from '../../../core/application/usecases/get-pqr-by-id.usecase';
@@ -9,7 +9,7 @@ import { GetPqrHistorialUseCase } from '../../../core/application/usecases/get-p
 import { GetUsersByRolUseCase } from '../../../core/application/usecases/get-users-by-rol.usecase';
 import { ResponderPqrUseCase } from '../../../core/application/usecases/responder-pqr.usecase';
 import { UpdatePqrEstadoUseCase } from '../../../core/application/usecases/update-pqr-estado.usecase';
-import { PqrStatusName } from '../../../core/domain/models/pqr.model';
+import { Pqr, PqrStatusName } from '../../../core/domain/models/pqr.model';
 import {
   BadgeEstadoComponent,
   BadgeTipoComponent,
@@ -39,6 +39,7 @@ import { VmDetallePqr } from '../../interfaces/vm-detalle-pqr.interface';
 })
 export class DetallePqrComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private getPqrByIdUseCase = inject(GetPqrByIdUseCase);
   private getPqrHistorialUseCase = inject(GetPqrHistorialUseCase);
   private getUsersByRolUseCase = inject(GetUsersByRolUseCase);
@@ -116,6 +117,11 @@ export class DetallePqrComponent implements OnInit {
   loadDetails(): void {
     this.getPqrByIdUseCase.execute(this.idPqr).subscribe({
       next: (pqr) => {
+        if (this.esCasoDeOtroResponsable(pqr)) {
+          this.router.navigateByUrl('/bandeja');
+          return;
+        }
+
         this.state.update((s) => ({ ...s, pqr, loading: false }));
         this.estadoForm.patchValue({ nuevoEstado: pqr.estado });
         this.loadHistory();
@@ -128,6 +134,12 @@ export class DetallePqrComponent implements OnInit {
         }));
       },
     });
+  }
+
+  /** Un Responsable solo puede abrir los casos que tiene asignados */
+  private esCasoDeOtroResponsable(pqr: Pqr): boolean {
+    const usuario = this.authService.currentUser();
+    return this.authService.userRol() === 'Responsable' && pqr.idResponsable !== usuario?.idUsuario;
   }
 
   loadHistory(): void {
