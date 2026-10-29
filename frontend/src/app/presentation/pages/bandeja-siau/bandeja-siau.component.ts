@@ -118,7 +118,14 @@ export class BandejaSiauComponent implements OnInit {
     });
 
     this.getAllPqrsUseCase.execute().subscribe({
-      next: (pqrs) => {
+      next: (todas) => {
+        // El responsable solo gestiona los casos que le fueron asignados
+        const user = this.authService.currentUser();
+        const pqrs =
+          this.authService.userRol() === 'Responsable'
+            ? todas.filter((p) => p.idResponsable === user?.idUsuario)
+            : todas;
+
         this.state.update((s) => ({
           ...s,
           loading: false,

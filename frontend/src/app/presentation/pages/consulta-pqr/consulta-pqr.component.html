@@ -84,7 +84,7 @@
           }
         </div>
 
-        @if (authService.userRol() === 'Analista SIAU' || authService.userRol() === 'Responsable') {
+        @if (authService.userRol() === 'Analista SIAU' || authService.userRol() === 'Responsable' || authService.userRol() === 'Directivo') {
           <div class="pqr-result-card__actions mt-4">
             <a [routerLink]="['/detalle', pqr.idPqr]" class="btn btn-sm btn-outline">
               Gestionar en Panel SIAU

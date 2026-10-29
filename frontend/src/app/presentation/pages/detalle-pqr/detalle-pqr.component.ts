@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/application/auth';
@@ -48,6 +48,21 @@ export class DetallePqrComponent implements OnInit {
   authService = inject(AuthService);
 
   idPqr!: number;
+
+  /** El analista SIAU clasifica y asigna los casos */
+  puedeAsignar = computed(() => this.authService.userRol() === 'Analista SIAU');
+
+  /** Analista y responsable pueden actualizar el estado del caso */
+  puedeActualizarEstado = computed(() => {
+    const rol = this.authService.userRol();
+    return rol === 'Analista SIAU' || rol === 'Responsable';
+  });
+
+  /** Solo el responsable emite la respuesta oficial */
+  puedeResponder = computed(() => this.authService.userRol() === 'Responsable');
+
+  /** El directivo consulta sin modificar */
+  soloLectura = computed(() => this.authService.userRol() === 'Directivo');
 
   estadosDisponibles: PqrStatusName[] = [
     'Recibida',

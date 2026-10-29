@@ -102,7 +102,15 @@
 
       <!-- Columna Derecha: Panel de Acciones Administrativas -->
       <aside class="detalle-sidebar">
+        @if (soloLectura()) {
+          <div class="card action-card">
+            <h4 class="action-card__title">Modo de consulta</h4>
+            <p class="text-muted">Su rol permite revisar el detalle y el historial de la solicitud, sin modificarla.</p>
+          </div>
+        }
+
         <!-- 1. Acción: Cambiar Estado -->
+        @if (puedeActualizarEstado()) {
         <div class="card action-card">
           <h4 class="action-card__title">Actualizar Estado</h4>
           <form [formGroup]="estadoForm" (ngSubmit)="onCambiarEstado()">
@@ -135,7 +143,10 @@
           </form>
         </div>
 
+        }
+
         <!-- 2. Acción: Asignar Responsable -->
+        @if (puedeAsignar()) {
         <div class="card action-card mt-4">
           <h4 class="action-card__title">Asignar Responsable</h4>
           <form [formGroup]="responsableForm" (ngSubmit)="onAsignarResponsable()">
@@ -158,7 +169,10 @@
           </form>
         </div>
 
+        }
+
         <!-- 3. Acción: Emitir Respuesta Oficial -->
+        @if (puedeResponder()) {
         <div class="card action-card mt-4">
           <h4 class="action-card__title">Emitir Respuesta Oficial</h4>
           <form [formGroup]="respuestaForm" (ngSubmit)="onResponder()">
@@ -181,6 +195,7 @@
             </button>
           </form>
         </div>
+        }
       </aside>
     </div>
   }
