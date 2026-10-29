@@ -11,6 +11,7 @@ import { GetUsuariosByRolUseCase } from '../application/usecases/usuarios/get-us
 import { SetUsuarioActivoUseCase } from '../application/usecases/usuarios/set-usuario-activo.usecase.js';
 import { UpdateUsuarioUseCase } from '../application/usecases/usuarios/update-usuario.usecase.js';
 import { DesCipherAdapter } from '../infrastructure/services/des-cipher.adapter.js';
+import { RsaCipherAdapter } from '../infrastructure/services/rsa-cipher.adapter.js';
 import { RolDatasource } from '../infrastructure/datasources/rol.datasource.js';
 import { UsuarioDatasource } from '../infrastructure/datasources/usuario.datasource.js';
 import { JwtTokenService } from '../infrastructure/services/jwt-token.service.js';
@@ -31,7 +32,9 @@ const usuarioDatasource = new UsuarioDatasource();
 const tokenService = new JwtTokenService();
 
 // Servicios
-const cipherService = new DesCipherAdapter(envs.DES_KEY);
+// DES para las peticiones (transporte) y RSA para las contrasenas guardadas (reposo)
+const requestCipher = new DesCipherAdapter(envs.DES_KEY);
+export const passwordCipher = new RsaCipherAdapter(envs.RSA_N, envs.RSA_E, envs.RSA_D);
 
 // 2. Repositorios
 const rolRepository = new RolRepositoryImpl(rolDatasource);
@@ -44,11 +47,11 @@ const getRolByIdUseCase = new GetRolByIdUseCase(rolRepository);
 const getAllUsuariosUseCase = new GetAllUsuariosUseCase(usuarioRepository, rolRepository);
 const getUsuarioByIdUseCase = new GetUsuarioByIdUseCase(usuarioRepository, rolRepository);
 const getUsuariosByRolUseCase = new GetUsuariosByRolUseCase(usuarioRepository, rolRepository);
-const createUsuarioUseCase = new CreateUsuarioUseCase(usuarioRepository, rolRepository);
+const createUsuarioUseCase = new CreateUsuarioUseCase(usuarioRepository, rolRepository, passwordCipher);
 const updateUsuarioUseCase = new UpdateUsuarioUseCase(usuarioRepository, rolRepository);
 const setUsuarioActivoUseCase = new SetUsuarioActivoUseCase(usuarioRepository, rolRepository);
 
-const loginUseCase = new LoginUseCase(usuarioRepository, rolRepository, tokenService);
+const loginUseCase = new LoginUseCase(usuarioRepository, rolRepository, tokenService, passwordCipher);
 const registerUseCase = new RegisterUseCase(createUsuarioUseCase, tokenService);
 const authenticateUseCase = new AuthenticateUseCase(tokenService, usuarioRepository, rolRepository);
 
@@ -73,5 +76,5 @@ export const authController = new AuthController(loginUseCase, registerUseCase, 
 export const appMiddlewares = {
   authenticate: authenticate(authenticateUseCase),
   authorize,
-  decryptFields: (...campos: string[]) => decryptBody(cipherService, ...campos),
+  decryptFields: (...campos: string[]) => decryptBody(requestCipher, ...campos),
 };

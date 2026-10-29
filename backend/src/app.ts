@@ -1,11 +1,17 @@
-import { appMiddlewares, authController, rolesController, usuariosController } from './config/dependencies.js';
+import {
+  appMiddlewares,
+  authController,
+  passwordCipher,
+  rolesController,
+  usuariosController,
+} from './config/dependencies.js';
 import { envs } from './config/envs.js';
 import { initDatabase } from './infrastructure/database/postgres.js';
 import { AppRoutes } from './presentation/routes/index.js';
 import { Server } from './presentation/server.js';
 
 async function main(): Promise<void> {
-  await initDatabase();
+  await initDatabase(passwordCipher);
 
   const routes = AppRoutes.routes(
     {
