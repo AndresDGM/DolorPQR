@@ -1,8 +1,10 @@
 import { EnvironmentProviders, makeEnvironmentProviders, Provider, Type } from '@angular/core';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
+import { CipherService } from '../../domain/services/cipher.service';
 import { CategoryRepository } from '../../domain/repositories/category.repository';
 import { PqrRepository } from '../../domain/repositories/pqr.repository';
 import { UserRepository } from '../../domain/repositories/user.repository';
+import { DesCipherAdapter } from '../../infrastructure/services/des-cipher.adapter';
 import { AuthLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/auth-local.repository.impl';
 import { CategoryLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/category-local.repository.impl';
 import { PqrLocalRepositoryImpl } from '../../infrastructure/repositories/local-implementation/pqr-local.repository.impl';
@@ -76,5 +78,8 @@ export function provideMipqrAdapter(config: MipqrAdapterConfig): EnvironmentProv
     })
   );
 
-  return makeEnvironmentProviders([...ALL_USE_CASES, ...repositories]);
+  // Servicios: el contrato de cifrado se resuelve con el adapter DES
+  const services: Provider[] = [{ provide: CipherService, useClass: DesCipherAdapter }];
+
+  return makeEnvironmentProviders([...ALL_USE_CASES, ...services, ...repositories]);
 }

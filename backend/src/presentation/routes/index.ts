@@ -16,6 +16,8 @@ export interface AppControllers {
 export interface AppMiddlewares {
   authenticate: RequestHandler;
   authorize: (...rolesPermitidos: RolNombre[]) => RequestHandler;
+  /** Descifra los campos indicados del body de la peticion */
+  decryptFields: (...campos: string[]) => RequestHandler;
 }
 
 export class AppRoutes {

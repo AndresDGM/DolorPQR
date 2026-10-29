@@ -1,4 +1,5 @@
 import { AuthenticateUseCase } from '../application/usecases/auth/authenticate.usecase.js';
+import { envs } from './envs.js';
 import { LoginUseCase } from '../application/usecases/auth/login.usecase.js';
 import { RegisterUseCase } from '../application/usecases/auth/register.usecase.js';
 import { GetAllRolesUseCase } from '../application/usecases/roles/get-all-roles.usecase.js';
@@ -9,6 +10,7 @@ import { GetUsuarioByIdUseCase } from '../application/usecases/usuarios/get-usua
 import { GetUsuariosByRolUseCase } from '../application/usecases/usuarios/get-usuarios-by-rol.usecase.js';
 import { SetUsuarioActivoUseCase } from '../application/usecases/usuarios/set-usuario-activo.usecase.js';
 import { UpdateUsuarioUseCase } from '../application/usecases/usuarios/update-usuario.usecase.js';
+import { DesCipherAdapter } from '../infrastructure/services/des-cipher.adapter.js';
 import { RolDatasource } from '../infrastructure/datasources/rol.datasource.js';
 import { UsuarioDatasource } from '../infrastructure/datasources/usuario.datasource.js';
 import { JwtTokenService } from '../infrastructure/services/jwt-token.service.js';
@@ -19,6 +21,7 @@ import { RolesController } from '../presentation/controllers/roles.controller.js
 import { UsuariosController } from '../presentation/controllers/usuarios.controller.js';
 import { authenticate } from '../presentation/middlewares/authenticate.middleware.js';
 import { authorize } from '../presentation/middlewares/authorize.middleware.js';
+import { decryptBody } from '../presentation/middlewares/decrypt-body.middleware.js';
 
 // 1. Datasources
 const rolDatasource = new RolDatasource();
@@ -26,6 +29,9 @@ const usuarioDatasource = new UsuarioDatasource();
 
 // Servicios de infraestructura
 const tokenService = new JwtTokenService();
+
+// Servicios
+const cipherService = new DesCipherAdapter(envs.DES_KEY);
 
 // 2. Repositorios
 const rolRepository = new RolRepositoryImpl(rolDatasource);
@@ -67,4 +73,5 @@ export const authController = new AuthController(loginUseCase, registerUseCase, 
 export const appMiddlewares = {
   authenticate: authenticate(authenticateUseCase),
   authorize,
+  decryptFields: (...campos: string[]) => decryptBody(cipherService, ...campos),
 };
