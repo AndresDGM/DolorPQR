@@ -2,12 +2,14 @@ import { CreateUsuarioDto } from '../../../domain/dtos/create-usuario.dto.js';
 import { CustomError } from '../../../domain/errors/custom.error.js';
 import { RolRepository } from '../../../domain/repositories/rol.repository.js';
 import { UsuarioRepository } from '../../../domain/repositories/usuario.repository.js';
+import { CipherService } from '../../../domain/services/cipher.service.js';
 import { toUsuarioPublico, UsuarioPublico } from '../../types/usuario-publico.type.js';
 
 export class CreateUsuarioUseCase {
   constructor(
     private readonly usuarioRepository: UsuarioRepository,
-    private readonly rolRepository: RolRepository
+    private readonly rolRepository: RolRepository,
+    private readonly passwordCipher: CipherService
   ) {}
 
   async execute(dto: CreateUsuarioDto): Promise<UsuarioPublico> {
@@ -26,7 +28,10 @@ export class CreateUsuarioUseCase {
       throw CustomError.conflict('La identificacion ya se encuentra registrada');
     }
 
-    const nuevoUsuario = await this.usuarioRepository.create(dto);
+    // La contrasena se guarda cifrada; nunca en texto plano
+    const nuevoUsuario = await this.usuarioRepository.create(
+      dto.withPassword(this.passwordCipher.encrypt(dto.password))
+    );
     return toUsuarioPublico(nuevoUsuario, rol.nombre);
   }
 }
