@@ -11,7 +11,6 @@ import { Component, input } from '@angular/core';
   standalone: true,
   template: `
     <div class="empty-state">
-      <div class="empty-state__icon">{{ icono() }}</div>
       <h3 class="empty-state__title">{{ titulo() }}</h3>
       @if (descripcion()) {
         <p class="empty-state__description">{{ descripcion() }}</p>
@@ -23,5 +22,4 @@ import { Component, input } from '@angular/core';
 export class EmptyStateComponent {
   titulo = input.required<string>();
   descripcion = input<string>();
-  icono = input<string>('📋');
 }

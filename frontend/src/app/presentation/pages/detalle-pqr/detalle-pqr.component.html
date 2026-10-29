@@ -104,7 +104,7 @@
       <aside class="detalle-sidebar">
         <!-- 1. Acción: Cambiar Estado -->
         <div class="card action-card">
-          <h4 class="action-card__title">⚙️ Actualizar Estado</h4>
+          <h4 class="action-card__title">Actualizar Estado</h4>
           <form [formGroup]="estadoForm" (ngSubmit)="onCambiarEstado()">
             <div class="form-group">
               <label for="nuevoEstado">Nuevo Estado</label>
@@ -137,7 +137,7 @@
 
         <!-- 2. Acción: Asignar Responsable -->
         <div class="card action-card mt-4">
-          <h4 class="action-card__title">👤 Asignar Responsable</h4>
+          <h4 class="action-card__title">Asignar Responsable</h4>
           <form [formGroup]="responsableForm" (ngSubmit)="onAsignarResponsable()">
             <div class="form-group">
               <label for="idResponsable">Seleccionar Profesional</label>
@@ -160,7 +160,7 @@
 
         <!-- 3. Acción: Emitir Respuesta Oficial -->
         <div class="card action-card mt-4">
-          <h4 class="action-card__title">✉️ Emitir Respuesta Oficial</h4>
+          <h4 class="action-card__title">Emitir Respuesta Oficial</h4>
           <form [formGroup]="respuestaForm" (ngSubmit)="onResponder()">
             <div class="form-group">
               <label for="contenidoRespuesta">Contenido de la Respuesta Formal *</label>

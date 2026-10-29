@@ -13,10 +13,10 @@
 
       <div class="hero__actions">
         <a routerLink="/registro-pqr" class="btn btn-primary">
-          📝 Radicar Solicitud
+          Radicar Solicitud
         </a>
         <a routerLink="/consulta" class="btn btn-outline-accent">
-          🔍 Consultar por Código
+          Consultar por Código
         </a>
       </div>
     </div>
@@ -26,98 +26,39 @@
   <div class="container services">
     <div class="services__grid">
       <div class="card service-card">
-        <div class="service-card__icon service-card__icon--accent">📄</div>
         <h3 class="service-card__title">Radicación Digital</h3>
         <p class="service-card__desc">
           Presente su solicitud en línea en pocos minutos y reciba un código único de seguimiento para su control.
         </p>
         <a routerLink="/registro-pqr" class="btn btn-sm btn-accent mt-4">
-          Comenzar trámite &rarr;
+          Comenzar trámite
         </a>
       </div>
 
       <div class="card service-card">
-        <div class="service-card__icon service-card__icon--primary">🔎</div>
         <h3 class="service-card__title">Consulta de Trazabilidad</h3>
         <p class="service-card__desc">
           Verifique el estado actual, el profesional asignado y el historial cronológico de atención de su caso.
         </p>
         <a routerLink="/consulta" class="btn btn-sm btn-outline mt-4">
-          Consultar estado &rarr;
+          Consultar estado
         </a>
       </div>
 
       <div class="card service-card">
-        <div class="service-card__icon service-card__icon--staff">👥</div>
         <h3 class="service-card__title">Gestión SIAU y Procesos</h3>
         <p class="service-card__desc">
           Bandeja administrativa para clasificación, asignación de responsables y emisión de respuestas oportunas.
         </p>
         @if (!authService.isAuthenticated()) {
           <a routerLink="/login" class="btn btn-sm btn-outline mt-4">
-            Acceso institucional &rarr;
+            Acceso institucional
           </a>
         } @else {
           <a routerLink="/bandeja" class="btn btn-sm btn-primary mt-4">
-            Ir a la bandeja &rarr;
+            Ir a la bandeja
           </a>
         }
-      </div>
-    </div>
-  </div>
-
-  <!-- Flujo de Vida de una PQR -->
-  <div class="container lifecycle">
-    <div class="lifecycle__header">
-      <h2>Ciclo de Vida de una Solicitud</h2>
-      <p class="text-muted">Conozca las etapas por las que pasa cada requerimiento radicado en nuestra institución</p>
-    </div>
-
-    <div class="lifecycle__steps">
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">1</div>
-        <h4>Recibida</h4>
-        <p>Radicación formal y código emitido.</p>
-      </div>
-
-      <div class="lifecycle__arrow">&rarr;</div>
-
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">2</div>
-        <h4>En Revisión</h4>
-        <p>Evaluación preliminar por SIAU.</p>
-      </div>
-
-      <div class="lifecycle__arrow">&rarr;</div>
-
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">3</div>
-        <h4>Asignada</h4>
-        <p>Delegación al responsable.</p>
-      </div>
-
-      <div class="lifecycle__arrow">&rarr;</div>
-
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">4</div>
-        <h4>En Gestión</h4>
-        <p>Trámite de solución activa.</p>
-      </div>
-
-      <div class="lifecycle__arrow">&rarr;</div>
-
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">5</div>
-        <h4>Respondida</h4>
-        <p>Respuesta oficial emitida.</p>
-      </div>
-
-      <div class="lifecycle__arrow">&rarr;</div>
-
-      <div class="lifecycle__step">
-        <div class="lifecycle__num">6</div>
-        <h4>Cerrada</h4>
-        <p>Caso resuelto y archivado.</p>
       </div>
     </div>
   </div>

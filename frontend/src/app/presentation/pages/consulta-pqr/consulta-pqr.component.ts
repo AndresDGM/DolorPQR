@@ -110,8 +110,4 @@ export class ConsultaPqrComponent implements OnInit {
     });
   }
 
-  fillExample(code: string): void {
-    this.codigoControl.setValue(code);
-    this.searchPqr(code);
-  }
 }

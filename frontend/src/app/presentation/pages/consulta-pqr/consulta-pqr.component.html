@@ -21,21 +21,7 @@
           class="btn btn-primary"
           [disabled]="codigoControl.invalid || state().loading"
         >
-          🔍 Consultar Estado
-        </button>
-      </div>
-
-      <!-- Helper de códigos de ejemplo -->
-      <div class="example-codes">
-        <span class="text-muted">Códigos de prueba existentes:</span>
-        <button type="button" class="btn-link" (click)="fillExample('PQR-2026-0101')">
-          PQR-2026-0101
-        </button>
-        <button type="button" class="btn-link" (click)="fillExample('PQR-2026-0102')">
-          PQR-2026-0102
-        </button>
-        <button type="button" class="btn-link" (click)="fillExample('PQR-2026-0105')">
-          PQR-2026-0105
+          Consultar Estado
         </button>
       </div>
     </form>
@@ -52,7 +38,6 @@
       <app-empty-state
         titulo="Solicitud No Encontrada"
         [descripcion]="state().error!"
-        icono="⚠️"
       />
     </div>
   }
@@ -102,7 +87,7 @@
         @if (authService.userRol() === 'Analista SIAU' || authService.userRol() === 'Responsable') {
           <div class="pqr-result-card__actions mt-4">
             <a [routerLink]="['/detalle', pqr.idPqr]" class="btn btn-sm btn-outline">
-              ⚙️ Gestionar en Panel SIAU
+              Gestionar en Panel SIAU
             </a>
           </div>
         }
@@ -111,7 +96,7 @@
       <!-- Línea de Tiempo / Historial de Trazabilidad -->
       <div class="card history-card mt-6">
         <h3 class="history-card__title">Historial de Trazabilidad y Eventos</h3>
-        <p class="text-muted mb-4">Registro inmutable de las acciones realizadas durante el ciclo de atención</p>
+        <p class="text-muted mb-4">Registro inmutable de las acciones realizadas durante la atención de la solicitud</p>
 
         @if (state().history.length === 0) {
           <p class="text-muted">No hay eventos registrados aún para este radicado.</p>

@@ -13,9 +13,9 @@
 .card {
   background-color: $color-white;
   border-radius: $border-radius-md;
-  box-shadow: $shadow-sm;
+  box-shadow: none;
   padding: 1.5rem;
-  border: 1px solid rgba(40, 52, 71, 0.08);
+  border: 1px solid #e3e6eb;
 }
 
 .btn {
@@ -24,8 +24,10 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 6px;
-  font-weight: 500;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
   cursor: pointer;
   border: 1px solid transparent;
   transition: $transition-base;
@@ -101,7 +103,7 @@
   input, select, textarea {
     padding: 0.625rem 0.875rem;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: $color-white;
     color: $color-dark;
     outline: none;
@@ -127,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
+  border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: capitalize;

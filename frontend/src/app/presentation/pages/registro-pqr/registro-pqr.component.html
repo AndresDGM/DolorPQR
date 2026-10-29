@@ -2,8 +2,7 @@
   @if (state().createdPqr) {
     <!-- Vista de Confirmación con Código de Seguimiento -->
     <div class="card success-card">
-      <div class="success-card__icon">✅</div>
-      <h2>¡Solicitud Radicada Exitosamente!</h2>
+      <h2>Solicitud radicada exitosamente</h2>
       <p class="text-muted">
         Su requerimiento ha sido registrado formalmente en el sistema de la Clínica Dolormed.
       </p>
@@ -37,7 +36,7 @@
           class="btn btn-primary"
           (click)="goToConsulta(state().createdPqr!.codigoSeguimiento)"
         >
-          🔍 Consultar Estado Ahora
+          Consultar Estado Ahora
         </button>
         <button type="button" class="btn btn-outline" (click)="resetForm()">
           Radicar Otra Solicitud
