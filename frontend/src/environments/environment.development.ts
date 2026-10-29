@@ -4,6 +4,4 @@
 export const environment = {
   production: false,
   baseUrlNode: 'http://localhost:3000',
-  baseUrlSpringBoot: 'http://localhost:8080',
 };
-
