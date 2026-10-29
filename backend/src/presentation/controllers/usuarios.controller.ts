@@ -45,7 +45,7 @@ export class UsuariosController {
         return;
       }
 
-      const usuario = await this.getUsuarioByIdUseCase.execute(id);
+      const usuario = await this.getUsuarioByIdUseCase.execute(id, req.user!);
       res.json(usuario);
     } catch (error) {
       next(error);
@@ -97,7 +97,7 @@ export class UsuariosController {
         return;
       }
 
-      const usuario = await this.updateUsuarioUseCase.execute(id, dto!);
+      const usuario = await this.updateUsuarioUseCase.execute(id, dto!, req.user!);
       res.json(usuario);
     } catch (error) {
       next(error);
@@ -118,7 +118,7 @@ export class UsuariosController {
         return;
       }
 
-      const usuario = await this.setUsuarioActivoUseCase.execute(id, dto!);
+      const usuario = await this.setUsuarioActivoUseCase.execute(id, dto!, req.user!);
       res.json(usuario);
     } catch (error) {
       next(error);
