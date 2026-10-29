@@ -12,5 +12,9 @@ export const envs = {
   JWT_SECRET: env.get('JWT_SECRET').required().asString(),
   // Clave DES compartida con el cliente: exactamente 8 caracteres
   DES_KEY: env.get('DES_KEY').required().asString(),
+  // Claves RSA en hexadecimal (se generan con `npm run rsa:generate`)
+  RSA_N: env.get('RSA_N').required().asString(),
+  RSA_E: env.get('RSA_E').default('10001').asString(),
+  RSA_D: env.get('RSA_D').required().asString(),
   JWT_EXPIRES_IN: env.get('JWT_EXPIRES_IN').default('8h').asString(),
 };

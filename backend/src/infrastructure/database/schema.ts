@@ -11,10 +11,13 @@ CREATE TABLE IF NOT EXISTS usuario (
   nombre         VARCHAR(120) NOT NULL,
   correo         VARCHAR(160) NOT NULL UNIQUE,
   identificacion VARCHAR(20) NOT NULL UNIQUE,
-  -- TODO: reemplazar por password_hash cuando se agregue encriptacion
-  password       VARCHAR(255) NOT NULL,
+  -- Valor cifrado con RSA (formato "rsa1:<base64>"); nunca texto plano
+  password       TEXT NOT NULL,
   activo         BOOLEAN NOT NULL DEFAULT TRUE
 );
+
+-- Bases creadas antes del cifrado tenian la contrasena como VARCHAR(255)
+ALTER TABLE usuario ALTER COLUMN password TYPE TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_usuario_id_rol ON usuario (id_rol);
 `;
@@ -26,18 +29,4 @@ INSERT INTO rol (id_rol, nombre, descripcion) VALUES
   (3, 'Responsable', 'Profesional o jefe de area que gestiona y responde el caso.'),
   (4, 'Directivo', 'Coordinacion y direccion, con acceso de consulta.')
 ON CONFLICT (id_rol) DO NOTHING;
-
-INSERT INTO usuario (id_usuario, id_rol, nombre, correo, identificacion, password, activo) VALUES
-  (1, 2, 'Carolina Gomez', 'carolina.gomez@dolormed.com', '1010101001', '1234', TRUE),
-  (2, 3, 'Fernando Salazar', 'fernando.salazar@dolormed.com', '1010101002', '1234', TRUE),
-  (3, 3, 'Laura Ortiz', 'laura.ortiz@dolormed.com', '1010101003', '1234', TRUE),
-  (4, 4, 'Maria Valencia', 'maria.valencia@dolormed.com', '1010101004', '1234', TRUE),
-  (5, 1, 'Carlos Restrepo', 'carlos.restrepo@gmail.com', '1010101005', '1234', TRUE),
-  (6, 1, 'Ana Torres', 'ana.torres@gmail.com', '1010101006', '1234', FALSE)
-ON CONFLICT (id_usuario) DO NOTHING;
-
-SELECT setval(
-  pg_get_serial_sequence('usuario', 'id_usuario'),
-  GREATEST((SELECT COALESCE(MAX(id_usuario), 1) FROM usuario), 1)
-);
 `;
