@@ -111,7 +111,11 @@ export class DetallePqrComponent implements OnInit {
     }
 
     this.loadDetails();
-    this.loadResponsables();
+
+    // Solo quien puede asignar necesita (y puede consultar) la lista de responsables
+    if (this.puedeAsignar()) {
+      this.loadResponsables();
+    }
   }
 
   loadDetails(): void {

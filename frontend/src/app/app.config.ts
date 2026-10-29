@@ -1,8 +1,9 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
-import { providePqrLocal } from './core/application/providers/pqr.providers';
+import { provideMipqrAdapter } from './core/application/providers/mipqr.adapter';
 import { authInterceptor, errorInterceptor } from './core/infrastructure/interceptors';
 
 export const appConfig: ApplicationConfig = {
@@ -11,9 +12,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
 
-    // Inversión de dependencias de Infraestructura:
-    // - providePqrLocal()  -> Simulación en memoria con Faker
-    // - providePqrNode()   -> Backend API NodeJS (Express)
-    providePqrLocal(),
+    // Inversión de dependencias: el adapter enlaza cada contrato del dominio
+    // (AuthRepository, UserRepository, ...) con su implementación local o Node,
+    // según environment.adapter.
+    provideMipqrAdapter(environment.adapter),
   ],
 };

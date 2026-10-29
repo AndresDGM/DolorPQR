@@ -4,4 +4,11 @@
 export const environment = {
   production: false,
   baseUrlNode: 'http://localhost:3000',
+  // Origen de datos por módulo: 'node' consume el backend, 'local' usa la simulación en memoria
+  adapter: {
+    auth: 'node' as const,
+    users: 'node' as const,
+    pqrs: 'local' as const,
+    categories: 'local' as const,
+  },
 };
