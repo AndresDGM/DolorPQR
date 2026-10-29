@@ -1,16 +1,17 @@
-import express from 'express';
-import cors from 'cors';
+import { authController, rolesController, usuariosController } from './config/dependencies.js';
 import { envs } from './config/envs.js';
+import { AppRoutes } from './presentation/routes/index.js';
+import { Server } from './presentation/server.js';
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Servidor iniciado correctamente' });
+const routes = AppRoutes.routes({
+  authController,
+  rolesController,
+  usuariosController,
 });
 
-app.listen(envs.PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${envs.PORT}`);
+const server = new Server({
+  port: envs.PORT,
+  routes,
 });
+
+server.start();
