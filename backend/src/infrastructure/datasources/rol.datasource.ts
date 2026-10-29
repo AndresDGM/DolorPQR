@@ -1,27 +1,32 @@
-import { Rol } from '../../domain/entities/rol.entity.js';
+import { Rol, RolNombre } from '../../domain/entities/rol.entity.js';
+import { pool } from '../database/postgres.js';
+
+interface RolRow {
+  id_rol: number;
+  nombre: RolNombre;
+  descripcion: string;
+}
 
 export class RolDatasource {
-  private readonly roles: Rol[] = [
-    new Rol(1, 'Solicitante', 'Paciente o usuario externo que radica y consulta sus PQR.'),
-    new Rol(2, 'Analista SIAU', 'Funcionario de atencion al usuario que clasifica y asigna.'),
-    new Rol(3, 'Responsable', 'Profesional o jefe de area que gestiona y responde el caso.'),
-    new Rol(4, 'Directivo', 'Coordinacion y direccion, con acceso de consulta.'),
-  ];
+  private toEntity(row: RolRow): Rol {
+    return new Rol(row.id_rol, row.nombre, row.descripcion);
+  }
 
   async getAll(): Promise<Rol[]> {
-    return this.roles.map((r) => new Rol(r.idRol, r.nombre, r.descripcion));
+    const { rows } = await pool.query<RolRow>('SELECT * FROM rol ORDER BY id_rol');
+    return rows.map((r) => this.toEntity(r));
   }
 
   async getById(idRol: number): Promise<Rol | null> {
-    const rol = this.roles.find((r) => r.idRol === idRol);
-    if (!rol) return null;
-    return new Rol(rol.idRol, rol.nombre, rol.descripcion);
+    const { rows } = await pool.query<RolRow>('SELECT * FROM rol WHERE id_rol = $1', [idRol]);
+    return rows[0] ? this.toEntity(rows[0]) : null;
   }
 
   async getByNombre(nombre: string): Promise<Rol | null> {
-    const normalized = nombre.trim().toLowerCase();
-    const rol = this.roles.find((r) => r.nombre.toLowerCase() === normalized);
-    if (!rol) return null;
-    return new Rol(rol.idRol, rol.nombre, rol.descripcion);
+    const { rows } = await pool.query<RolRow>(
+      'SELECT * FROM rol WHERE LOWER(nombre) = LOWER($1)',
+      [nombre.trim()]
+    );
+    return rows[0] ? this.toEntity(rows[0]) : null;
   }
 }
