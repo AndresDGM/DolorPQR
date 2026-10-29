@@ -85,4 +85,11 @@ export class UserLocalDatasource {
   getUsersSync(): User[] {
     return [...this.users];
   }
+
+  /**
+   * Agrega un usuario a la memoria local.
+   */
+  addUserSync(user: User): void {
+    this.users.push(user);
+  }
 }
