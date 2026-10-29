@@ -32,13 +32,6 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required, Validators.minLength(4)]),
   });
 
-  fillDemoUser(email: string): void {
-    this.form.patchValue({
-      correo: email,
-      password: 'demoPassword123',
-    });
-  }
-
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
