@@ -1,4 +1,6 @@
+import { AuthenticateUseCase } from '../application/usecases/auth/authenticate.usecase.js';
 import { LoginUseCase } from '../application/usecases/auth/login.usecase.js';
+import { RegisterUseCase } from '../application/usecases/auth/register.usecase.js';
 import { GetAllRolesUseCase } from '../application/usecases/roles/get-all-roles.usecase.js';
 import { GetRolByIdUseCase } from '../application/usecases/roles/get-rol-by-id.usecase.js';
 import { CreateUsuarioUseCase } from '../application/usecases/usuarios/create-usuario.usecase.js';
@@ -9,15 +11,21 @@ import { SetUsuarioActivoUseCase } from '../application/usecases/usuarios/set-us
 import { UpdateUsuarioUseCase } from '../application/usecases/usuarios/update-usuario.usecase.js';
 import { RolDatasource } from '../infrastructure/datasources/rol.datasource.js';
 import { UsuarioDatasource } from '../infrastructure/datasources/usuario.datasource.js';
+import { JwtTokenService } from '../infrastructure/services/jwt-token.service.js';
 import { RolRepositoryImpl } from '../infrastructure/repositories/rol.repository.impl.js';
 import { UsuarioRepositoryImpl } from '../infrastructure/repositories/usuario.repository.impl.js';
 import { AuthController } from '../presentation/controllers/auth.controller.js';
 import { RolesController } from '../presentation/controllers/roles.controller.js';
 import { UsuariosController } from '../presentation/controllers/usuarios.controller.js';
+import { authenticate } from '../presentation/middlewares/authenticate.middleware.js';
+import { authorize } from '../presentation/middlewares/authorize.middleware.js';
 
 // 1. Datasources
 const rolDatasource = new RolDatasource();
 const usuarioDatasource = new UsuarioDatasource();
+
+// Servicios de infraestructura
+const tokenService = new JwtTokenService();
 
 // 2. Repositorios
 const rolRepository = new RolRepositoryImpl(rolDatasource);
@@ -34,7 +42,9 @@ const createUsuarioUseCase = new CreateUsuarioUseCase(usuarioRepository, rolRepo
 const updateUsuarioUseCase = new UpdateUsuarioUseCase(usuarioRepository, rolRepository);
 const setUsuarioActivoUseCase = new SetUsuarioActivoUseCase(usuarioRepository, rolRepository);
 
-const loginUseCase = new LoginUseCase(usuarioRepository, rolRepository);
+const loginUseCase = new LoginUseCase(usuarioRepository, rolRepository, tokenService);
+const registerUseCase = new RegisterUseCase(createUsuarioUseCase, tokenService);
+const authenticateUseCase = new AuthenticateUseCase(tokenService, usuarioRepository, rolRepository);
 
 // 4. Controladores
 export const rolesController = new RolesController(
@@ -51,4 +61,10 @@ export const usuariosController = new UsuariosController(
   setUsuarioActivoUseCase
 );
 
-export const authController = new AuthController(loginUseCase);
+export const authController = new AuthController(loginUseCase, registerUseCase, getUsuarioByIdUseCase);
+
+// 5. Middlewares
+export const appMiddlewares = {
+  authenticate: authenticate(authenticateUseCase),
+  authorize,
+};
