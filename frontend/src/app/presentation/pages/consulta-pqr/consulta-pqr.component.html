@@ -8,7 +8,7 @@
       </p>
     </div>
 
-    <form (ngSubmit)="onSearch()" class="search-form">
+    <form (submit)="$event.preventDefault(); onSearch()" class="search-form">
       <div class="search-input-group">
         <input
           type="text"
