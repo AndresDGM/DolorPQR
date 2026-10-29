@@ -6,8 +6,10 @@ export class AuthRoutes {
   static routes(controller: AuthController, middlewares: AppMiddlewares): Router {
     const router = Router();
 
-    router.post('/login', controller.login);
-    router.post('/register', controller.register);
+    const { decryptFields } = middlewares;
+
+    router.post('/login', decryptFields('correo', 'password'), controller.login);
+    router.post('/register', decryptFields('correo', 'password'), controller.register);
     router.get('/me', middlewares.authenticate, controller.me);
 
     return router;
